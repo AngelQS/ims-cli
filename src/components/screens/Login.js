@@ -9,7 +9,7 @@ const Login = () => {
         <h2>Instagram</h2>
         <input type="text" placeholder="Email"></input>
         <input type="password" placeholder="Password"></input>
-        <button className="btn waves-effect waves-light #64b5f6 blue lighten-2">
+        <button className="btn waves-effect waves-light #64b5f6 blue darken-1">
           Login
         </button>
         <h6>
