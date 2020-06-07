@@ -45,7 +45,6 @@ const Signup = () => {
       })
       .then((data) => {
         if (data.error) {
-          console.log("data:", data);
           return M.toast({
             html: data.error.nestedErrors.message,
             classes: "#c62828 red darken-3",
@@ -58,7 +57,7 @@ const Signup = () => {
         return history.push("/login");
       })
       .catch((err) => {
-        M.toast({ html: err.message });
+        M.toast({ html: "Something went wrong" });
       });
   };
   return (
