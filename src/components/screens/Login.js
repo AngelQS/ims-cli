@@ -4,12 +4,27 @@ import { Link, useHistory } from "react-router-dom";
 import { getUUIDV4 } from "../../utils/uuid";
 import M from "materialize-css";
 
+// Local
+import CredentialValidator from "../../services/validator/credential-validator";
+
 const Login = () => {
   const history = useHistory();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const PostData = () => {
-    if (
+    const isValidLogin = new CredentialValidator(
+      null,
+      null,
+      null,
+      email,
+      password,
+      null
+    ).verifyLogin();
+    console.log("isValidLogin:", isValidLogin);
+    if (isValidLogin) {
+      return M.toast({ html: isValidLogin, classes: "c62828 red darken-3" });
+    }
+    /* if (
       !/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
         email
       )
@@ -18,7 +33,7 @@ const Login = () => {
         html: "Email entered is invalid",
         classes: "c62828 red darken-3",
       });
-    }
+    } */
     fetch("/account/login", {
       method: "POST",
       headers: {
@@ -35,7 +50,6 @@ const Login = () => {
         return res.json();
       })
       .then((data) => {
-        console.log("DATA:", data.error.message);
         if (data.error) {
           return M.toast({
             html: data.error.nestedErrors.message,

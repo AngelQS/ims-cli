@@ -4,6 +4,9 @@ import { Link, useHistory } from "react-router-dom";
 import { getUUIDV4 } from "../../utils/uuid";
 import M from "materialize-css";
 
+// Local
+import CredentialValidator from "../../services/validator/credential-validator";
+
 const Signup = () => {
   const history = useHistory();
   const [firstname, setFirstname] = useState("");
@@ -14,7 +17,19 @@ const Signup = () => {
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
 
   const PostData = () => {
-    if (
+    const isValidSignup = new CredentialValidator(
+      firstname,
+      lastname,
+      username,
+      email,
+      password,
+      passwordConfirmation
+    ).verifySignup();
+    console.log("isValidLogin:", isValidSignup);
+    if (isValidSignup) {
+      return M.toast({ html: isValidSignup, classes: "c62828 red darken-3" });
+    }
+    /* if (
       !/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
         email
       )
@@ -23,7 +38,7 @@ const Signup = () => {
         html: "Email entered is invalid",
         classes: "c62828 red darken-3",
       });
-    }
+    } */
     fetch("/account/signup", {
       method: "POST",
       headers: {
