@@ -1,5 +1,5 @@
 // Third
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { getUUIDV4 } from "../../utils/uuid";
 import M from "materialize-css";
@@ -10,6 +10,46 @@ const CreatePost = () => {
   const [body, setBody] = useState("");
   const [image, setImage] = useState(Object);
   const [url, setUrl] = useState("");
+
+  useEffect(() => {
+    if (url) {
+      console.log("THE URL:", url);
+      fetch("/posts/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "IMS-Request-Id": getUUIDV4().toString(),
+          "IMS-Request-Date": new Date().toISOString(),
+          Authorization: `Bearer ${localStorage.getItem("authorization")}`,
+        },
+        body: JSON.stringify({
+          title,
+          body,
+          photo: url,
+        }),
+      })
+        .then((res) => {
+          return res.json();
+        })
+        .then((data) => {
+          console.log("PostCreated:", data);
+          if (data.error) {
+            return M.toast({
+              html: data.error,
+              classes: "#c62828 red darken-3",
+            });
+          }
+          M.toast({
+            html: "Post created",
+            classes: "#43a047 green darken-1",
+          });
+          return history.push("/");
+        })
+        .catch((err) => {
+          M.toast({ html: "Something went wrong" });
+        });
+    }
+  });
 
   const PostDetails = () => {
     const data = new FormData();
@@ -32,42 +72,7 @@ const CreatePost = () => {
       .catch((err) => {
         console.log("err:", err);
       });
-
-    fetch("/posts/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "IMS-Request-Id": getUUIDV4().toString(),
-        "IMS-Request-Date": new Date().toISOString(),
-      },
-      body: JSON.stringify({
-        title,
-        body,
-        photo: url,
-      }),
-    })
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        if (data.error) {
-          return M.toast({
-            html: data.error,
-            classes: "#c62828 red darken-3",
-          });
-        }
-        M.toast({
-          html: "Post created",
-          classes: "#43a047 green darken-1",
-        });
-        return history.push("/");
-      })
-      .catch((err) => {
-        M.toast({ html: "Something went wrong" });
-      });
   };
-
-  fetch("/posts/");
 
   return (
     <div

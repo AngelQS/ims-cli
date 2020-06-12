@@ -61,6 +61,7 @@ const Login = () => {
             classes: "#c62828 red darken-3",
           });
         }
+        localStorage.setItem("authorization", data.token);
         M.toast({
           html: "Success login",
           classes: "#43a047 green darken-1",
