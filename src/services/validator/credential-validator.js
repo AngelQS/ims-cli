@@ -8,7 +8,7 @@ const {
   isAlphanumeric,
   isLength,
   matches,
-  isAlpha,
+  isAscii,
 } = validator;
 
 class CredentialValidator {
@@ -104,21 +104,24 @@ class CredentialValidator {
       return { error: "Names fields must not be empty" };
     }
     if (
+      !matches(this.#firstname, /[a-zA-Z]/) ||
+      !matches(this.#lastname, /[a-zA-Z]/)
+    ) {
+      return {
+        error: "Names fields only must contain alphabetical characters",
+      };
+    }
+    if (
       !isLength(this.#firstname, { min: 2 }) ||
       !isLength(this.#lastname, { min: 2 })
     ) {
       return { error: "Names fields must be at least 2 characters" };
     }
     if (
-      !isLength(this.#firstname, { max: 30 }) ||
-      !isLength(this.#lastname, { max: 30 })
+      !isLength(this.#firstname, { max: 50 }) ||
+      !isLength(this.#lastname, { max: 50 })
     ) {
-      return { error: "Names fields must be at max 30 characters" };
-    }
-    if (!isAlpha(this.#firstname) || !isAlpha(this.#lastname)) {
-      return {
-        error: "Names fields only must contain alphabetical characters",
-      };
+      return { error: "Names fields must be at max 50 characters" };
     }
     return { error: false };
   }
@@ -133,9 +136,9 @@ class CredentialValidator {
     ) {
       return { error: "Username is a required field" };
     }
-    if (isAlphanumeric(this.#username)) {
+    if (!isAscii(this.#username)) {
       return {
-        error: "Username field only must contain alphanumeric characters",
+        error: "Username field must contain ascii characters",
       };
     }
     this.#username = this.#username.trim();
@@ -186,9 +189,9 @@ class CredentialValidator {
     ) {
       return { error: "Password is a required field" };
     }
-    if (!isAlphanumeric(this.#password)) {
+    if (!isAscii(this.#password)) {
       return {
-        error: "Password field only must contain alphanumeric characters",
+        error: "Password field must contain ascii characters",
       };
     }
     this.#password = this.#password.trim();
@@ -224,11 +227,17 @@ class CredentialValidator {
       this.#password === "" ||
       this.#password === null ||
       this.#password === "null" ||
+      this.#password === "false" ||
+      this.#password === undefined ||
+      this.#passwordConfirmation === "" ||
+      this.#passwordConfirmation === null ||
+      this.#passwordConfirmation === "null" ||
       this.#passwordConfirmation === "false" ||
       this.#passwordConfirmation === undefined
     ) {
       return { error: "Password confirmation is a required field" };
     }
+    this.#password = this.#password.trim();
     this.#passwordConfirmation = this.#passwordConfirmation.trim();
     if (isEmpty(this.#passwordConfirmation, { ignore_whitespace: true })) {
       return { error: "Password confirmation field must be not empty" };
