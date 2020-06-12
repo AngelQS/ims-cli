@@ -1,13 +1,15 @@
 // Third
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { getUUIDV4 } from "../../utils/uuid";
 import M from "materialize-css";
 
 // Local
 import CredentialValidator from "../../services/validator/credential-validator";
+import { UserContext } from "../../App";
 
 const Login = () => {
+  const { state, dispatch } = useContext(UserContext);
   const history = useHistory();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -62,6 +64,7 @@ const Login = () => {
           });
         }
         localStorage.setItem("authorization", data.token);
+        dispatch({ type: "USER", payload: data.token });
         M.toast({
           html: "Success login",
           classes: "#43a047 green darken-1",

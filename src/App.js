@@ -1,9 +1,10 @@
 // Third
-import React from "react";
-import { BrowserRouter, Route } from "react-router-dom";
+import React, { useEffect, createContext, useReducer, useContext } from "react";
+import { BrowserRouter, Route, Switch, useHistory } from "react-router-dom";
 
 // Local
 import "./App.css";
+import { reducer, initialState } from "./reducers/userReducer";
 
 // Components
 import NavBar from "./components/Navbar";
@@ -13,10 +14,23 @@ import Profile from "./components/screens/Profile";
 import Signup from "./components/screens/Signup";
 import CreatePost from "./components/screens/CreatePost";
 
-function App() {
+export const UserContext = createContext();
+
+const Routing = () => {
+  const history = useHistory();
+  const { state, dispatch } = useContext(UserContext);
+  useEffect(() => {
+    const user = localStorage.getItem("authorization");
+    console.log("user:", user);
+    if (user) {
+      dispatch({ type: "USER", payload: user });
+      return history.push("/");
+    }
+    return history.push("/login");
+  });
+
   return (
-    <BrowserRouter>
-      <NavBar />
+    <Switch>
       <Route exact path="/">
         <Home />
       </Route>
@@ -32,7 +46,19 @@ function App() {
       <Route path="/create">
         <CreatePost />
       </Route>
-    </BrowserRouter>
+    </Switch>
+  );
+};
+
+function App() {
+  const [state, dispatch] = useReducer(reducer, initialState);
+  return (
+    <UserContext.Provider value={{ state, dispatch }}>
+      <BrowserRouter>
+        <NavBar />
+        <Routing />
+      </BrowserRouter>
+    </UserContext.Provider>
   );
 }
 
