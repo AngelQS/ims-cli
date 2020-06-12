@@ -64,7 +64,7 @@ const Signup = () => {
       .then((data) => {
         if (data.error) {
           return M.toast({
-            html: data.error.nestedErrors.message,
+            html: data.error,
             classes: "#c62828 red darken-3",
           });
         }

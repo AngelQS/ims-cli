@@ -54,6 +54,7 @@ const Login = () => {
         return res.json();
       })
       .then((data) => {
+        console.log(data);
         if (data.error) {
           return M.toast({
             html: data.error,
