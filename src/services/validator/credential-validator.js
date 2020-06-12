@@ -2,14 +2,7 @@
 import validator from "validator";
 
 // Initializations
-const {
-  isEmpty,
-  isEmail,
-  isAlphanumeric,
-  isLength,
-  matches,
-  isAscii,
-} = validator;
+const { isEmpty, isEmail, isLength, matches, isAscii } = validator;
 
 class CredentialValidator {
   #firstname;
@@ -38,14 +31,13 @@ class CredentialValidator {
   verifyLogin() {
     const emailResult = this.verifyEmail();
     if (emailResult.error) {
-      console.log("emailResult:", emailResult.error);
       return emailResult.error;
     }
-    const passwordResult = this.verifyPassword();
+    const passwordResult = this.verifyPassword("login");
     if (passwordResult.error) {
       return passwordResult.error;
     }
-    return false;
+    return;
   }
 
   verifySignup() {
@@ -61,7 +53,7 @@ class CredentialValidator {
     if (emailResult.error) {
       return emailResult.error;
     }
-    const passwordResult = this.verifyPassword();
+    const passwordResult = this.verifyPassword("signup");
     if (passwordResult.error) {
       return passwordResult.error;
     }
@@ -69,7 +61,7 @@ class CredentialValidator {
     if (passwordConfirmationResult.error) {
       return passwordConfirmationResult.error;
     }
-    return false;
+    return;
   }
 
   verifyNames() {
@@ -179,7 +171,7 @@ class CredentialValidator {
     return { error: false };
   }
 
-  verifyPassword() {
+  verifyPassword(context) {
     if (
       this.#password === "" ||
       this.#password === null ||
@@ -198,26 +190,28 @@ class CredentialValidator {
     if (isEmpty(this.#password, { ignore_whitespace: true })) {
       return { error: "Password field must be not empty" };
     }
-    if (!isLength(this.#password, { min: 8 })) {
-      return { error: "Password field must be at least 8 characters" };
-    }
-    if (!isLength(this.#password, { max: 72 })) {
-      return { error: "Password field must be at max 72 characters" };
-    }
-    if (!matches(this.#password, /\d{1,}/)) {
-      return { error: "Password field must contain at least 1 number" };
-    }
-    if (!matches(this.#password, /([a-z]){1,}/)) {
-      return {
-        error:
-          "Password field must contain at least 1 lowercase alphabetical character",
-      };
-    }
-    if (!matches(this.#password, /([A-Z]){1,}/)) {
-      return {
-        error:
-          "Password field must contain at least 1 uppercase alphabetical character",
-      };
+    if (context === "signup") {
+      if (!isLength(this.#password, { min: 8 })) {
+        return { error: "Password field must be at least 8 characters" };
+      }
+      if (!isLength(this.#password, { max: 72 })) {
+        return { error: "Password field must be at max 72 characters" };
+      }
+      if (!matches(this.#password, /\d{1,}/)) {
+        return { error: "Password field must contain at least 1 number" };
+      }
+      if (!matches(this.#password, /([a-z]){1,}/)) {
+        return {
+          error:
+            "Password field must contain at least 1 lowercase alphabetical character",
+        };
+      }
+      if (!matches(this.#password, /([A-Z]){1,}/)) {
+        return {
+          error:
+            "Password field must contain at least 1 uppercase alphabetical character",
+        };
+      }
     }
     return { error: false };
   }

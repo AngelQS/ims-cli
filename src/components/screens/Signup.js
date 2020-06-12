@@ -27,7 +27,10 @@ const Signup = () => {
     ).verifySignup();
     console.log("isValidLogin:", isValidSignup);
     if (isValidSignup) {
-      return M.toast({ html: isValidSignup, classes: "c62828 red darken-3" });
+      return M.toast({
+        html: `${isValidSignup}`,
+        classes: "c62828 red darken-3",
+      });
     }
     /* if (
       !/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(

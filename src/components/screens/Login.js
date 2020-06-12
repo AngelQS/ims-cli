@@ -22,7 +22,11 @@ const Login = () => {
     ).verifyLogin();
     console.log("isValidLogin:", isValidLogin);
     if (isValidLogin) {
-      return M.toast({ html: isValidLogin, classes: "c62828 red darken-3" });
+      console.log("paso if");
+      return M.toast({
+        html: `${isValidLogin}`,
+        classes: "c62828 red darken-3",
+      });
     }
     /* if (
       !/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
@@ -52,7 +56,7 @@ const Login = () => {
       .then((data) => {
         if (data.error) {
           return M.toast({
-            html: data.error.nestedErrors.message,
+            html: data.error,
             classes: "#c62828 red darken-3",
           });
         }
@@ -63,6 +67,7 @@ const Login = () => {
         return history.push("/");
       })
       .catch((err) => {
+        console.log("error:", err);
         M.toast({ html: "Something went wrong" });
       });
   };
