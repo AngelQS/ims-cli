@@ -13,7 +13,7 @@ const CreatePost = () => {
 
   useEffect(() => {
     if (url) {
-      console.log("THE URL:", url);
+      console.log("LA PRIMERA URL:", url);
       fetch("/posts/", {
         method: "POST",
         headers: {
@@ -29,6 +29,8 @@ const CreatePost = () => {
         }),
       })
         .then((res) => {
+          console.log("LA SEGUNDA URL:", url);
+          console.log("PASANDO AL RES.JSON()");
           return res.json();
         })
         .then((data) => {
@@ -46,13 +48,33 @@ const CreatePost = () => {
           return history.push("/");
         })
         .catch((err) => {
-          M.toast({ html: "Something went wrong" });
+          console.log("ERROR DEL CATCH CREATEPOST:", err);
+          return M.toast({ html: "Something went wrong" });
         });
     }
-  });
+  }, [body, history, title, url]);
 
   const PostDetails = () => {
     const data = new FormData();
+    if (title.length === 0) {
+      return M.toast({
+        html: "Title is required",
+        classes: "#c62828 red darken-3",
+      });
+    }
+    if (body.length === 0) {
+      return M.toast({
+        html: "Body is required",
+        classes: "#c62828 red darken-3",
+      });
+    }
+    if (!(image instanceof File)) {
+      return M.toast({
+        html: "Photo is required",
+        classes: "#c62828 red darken-3",
+      });
+    }
+
     data.append("file", image);
     data.append("upload_preset", "ims-preset");
     data.append("cloud_name", "aqs-cloud");
@@ -65,7 +87,13 @@ const CreatePost = () => {
         return res.json();
       })
       .then((data) => {
-        console.log("data:", data);
+        if (data.error) {
+          return M.toast({
+            html: "Something went wrong uploading your photo. Try it later",
+            classes: "#c62828 red darken-3",
+          });
+        }
+        console.log("data de la imagen:", data);
         setUrl(data.url);
         return data;
       })
