@@ -14,7 +14,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const PostData = () => {
-    const isValidLogin = new CredentialValidator(
+    const errorOnLogin = new CredentialValidator(
       null,
       null,
       null,
@@ -22,11 +22,11 @@ const Login = () => {
       password,
       null
     ).verifyLogin();
-    console.log("isValidLogin:", isValidLogin);
-    if (isValidLogin) {
+    console.log("errorOnLogin:", errorOnLogin);
+    if (errorOnLogin) {
       console.log("paso if");
       return M.toast({
-        html: `${isValidLogin}`,
+        html: `${errorOnLogin}`,
         classes: "c62828 red darken-3",
       });
     }

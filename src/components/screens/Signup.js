@@ -17,7 +17,7 @@ const Signup = () => {
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
 
   const PostData = () => {
-    const isValidSignup = new CredentialValidator(
+    const errorOnSingup = new CredentialValidator(
       firstname,
       lastname,
       username,
@@ -25,10 +25,10 @@ const Signup = () => {
       password,
       passwordConfirmation
     ).verifySignup();
-    console.log("isValidLogin:", isValidSignup);
-    if (isValidSignup) {
+    console.log("isValidLogin:", errorOnSingup);
+    if (errorOnSingup) {
       return M.toast({
-        html: `${isValidSignup}`,
+        html: `${errorOnSingup}`,
         classes: "c62828 red darken-3",
       });
     }
