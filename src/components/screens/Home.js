@@ -132,12 +132,51 @@ const Home = () => {
       });
   };
 
+  const deletePost = (postId) => {
+    fetch(`/posts/comment/${postId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("authorization")}`,
+        "IMS-Request-Id": getUUIDV4().toString(),
+        "IMS-Request-Date": new Date().toISOString(),
+      },
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((result) => {
+        console.log("DELETE POST RESULT:", result);
+        const newData = data.filter((item) => {
+          console.log("item._id:", item._id);
+          console.log("result.post._id:", result.post._id);
+          return item._id !== result.post._id;
+        });
+        return setData(newData);
+      })
+      .catch((err) => {
+        console.log("ERROR CATCH DELETE POST:", err);
+      });
+  };
+
   return (
     <div className="home">
       {data.map((item) => {
         return (
           <div key={item._id} className="card home-card">
-            <h5>@{newState.username}</h5>
+            <h5>
+              @{newState.username}
+              {item.postedBy._id === newState._id && (
+                <i
+                  className="material-icons"
+                  onClick={() => {
+                    deletePost(item._id);
+                  }}
+                  style={{ float: "right" }}
+                >
+                  delete
+                </i>
+              )}
+            </h5>
             <div className="card-image">
               <img src={item.photo} alt="card-pic" />
             </div>
