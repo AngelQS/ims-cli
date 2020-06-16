@@ -8,7 +8,9 @@ const Profile = () => {
   const [pics, setPics] = useState([]);
   const { state, dispatch } = useContext(UserContext);
   console.log("PROFILE STATEX:", state);
-  const username = localStorage.getItem("user");
+  const user = localStorage.getItem("user");
+  const { username } = JSON.parse(user);
+  console.log("USERNAME ON PROFILE?:", username);
 
   useEffect(() => {
     fetch("/posts/", {
