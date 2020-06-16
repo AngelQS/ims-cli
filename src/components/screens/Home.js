@@ -99,6 +99,39 @@ const Home = () => {
       });
   };
 
+  const makeAComment = (text, postId) => {
+    fetch("/posts/comment", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "Application/json",
+        Authorization: `Bearer ${localStorage.getItem("authorization")}`,
+        "IMS-Request-Id": getUUIDV4().toString(),
+        "IMS-Request-Date": new Date().toISOString(),
+      },
+      body: JSON.stringify({
+        _id: postId,
+        text,
+      }),
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((result) => {
+        console.log("COMMENT RESULT:", result);
+        const newData = data.map((item) => {
+          if (item._id === result.post._id) {
+            return result.post;
+          } else {
+            return item;
+          }
+        });
+        return setData(newData);
+      })
+      .catch((err) => {
+        console.log("ERROR CATCH MAKE COMMENT HOME:", err);
+      });
+  };
+
   return (
     <div className="home">
       {data.map((item) => {
@@ -137,7 +170,25 @@ const Home = () => {
               <h6>{item.likes.length} likes</h6>
               <h6>{item.title}</h6>
               <p>{item.body}</p>
-              <input type="text" placeholder="add a comment" />
+              {item.comments.map((record) => {
+                return (
+                  <h6 key={record._id}>
+                    <span style={{ fontWeight: 500 }}>
+                      {record.postedBy.username}
+                    </span>
+                    &nbsp;{record.text}
+                  </h6>
+                );
+              })}
+
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  makeAComment(e.target[0].value, item._id);
+                }}
+              >
+                <input type="text" placeholder="add a comment" />
+              </form>
             </div>
           </div>
         );
