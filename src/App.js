@@ -20,11 +20,10 @@ const Routing = () => {
   const history = useHistory();
   const { state, dispatch } = useContext(UserContext);
   useEffect(() => {
-    const user = localStorage.getItem("authorization");
-    console.log("user:", user);
+    const user = localStorage.getItem("user");
+    console.log("APP.JS USER:", user);
     if (user) {
-      dispatch({ type: "USER", payload: user });
-      return history.push("/");
+      return dispatch({ type: "USER", payload: user });
     }
     return history.push("/login");
   });

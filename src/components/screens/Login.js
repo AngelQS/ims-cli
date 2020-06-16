@@ -64,6 +64,7 @@ const Login = () => {
           });
         }
         localStorage.setItem("authorization", data.token);
+        localStorage.setItem("user", data.user);
         dispatch({ type: "USER", payload: data.token });
         M.toast({
           html: "Success login",
